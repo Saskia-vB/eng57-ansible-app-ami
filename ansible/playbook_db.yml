@@ -1,0 +1,41 @@
+---
+- hosts: db
+
+  gather_facts: yes
+
+  become: true
+
+  tasks:
+
+    - name: MongoDB - Import public key
+      shell: wget -qO - https://www.mongodb.org/static/pgp/server-3.2.asc | sudo apt-key add -
+
+    - name: MongoDB - Add repository
+      shell: echo "deb http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.2 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.2.list
+
+    - name: install mongo db
+      apt: pkg=mongodb-org state=present
+
+    - name: Text substitution fr mongod.conf
+      shell: sudo sed -i "s,\\(^[[:blank:]]*bindIp:\\) .*,\\1 0.0.0.0," /etc/mongod.conf
+
+    - name: Echo mongodb-org 1
+      shell: echo "mongodb-org hold" | sudo dpkg --set-selections
+
+    - name: Echo mongodb-org 2
+      shell: echo "mongodb-org-server hold" | sudo dpkg --set-selections
+
+    - name: Echo mongodb-org 3
+      shell: echo "mongodb-org-shell hold" | sudo dpkg --set-selections
+
+    - name: Echo mongodb-org 4
+      shell: echo "mongodb-org-mongos hold" | sudo dpkg --set-selections
+
+    - name: Echo mongodb-org 5
+      shell: echo "mongodb-org-tools hold" | sudo dpkg --set-selections
+
+    - name: MongoDB - Running state
+      shell: systemctl start mongod
+
+    - name: MongoDB - Enable
+      shell: systemctl enable mongod

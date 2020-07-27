@@ -1,0 +1,92 @@
+# This is an example of ansible playbook written in YMAL
+# YAML FILE STARTS WITH THREE --- DASHES(---)
+---
+- hosts: aws_ec2
+# host is to define the name of your host machine, group or all servers
+# in this example we are targeting server called web
+  gather_facts: yes
+# gethering facts before performing any tasks
+  become: true
+# become is used to get root permission to perform any tasks that may require admin access
+  tasks:
+  - name: Install git
+    apt: name=git
+
+  - name: Curl Node Source
+    shell: curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
+
+  - name: Install Python
+    apt: pkg=python state=present
+
+  - name: Install Node.js
+    apt: pkg=nodejs state=present
+
+  - name: install NPM
+    shell: npm install
+    args:
+      chdir: /home/ubuntu
+
+  - name: Install PM2
+    npm:
+      name: pm2
+      global: yes
+
+  - name: Install Nginx
+    apt: pkg=nginx state=present
+
+ # - name: Remove nginx default files - sites available
+    #shell: rm /etc/nginx/sites-available/default
+
+  #- name: Remove nginx default files - sites enabled
+    #shell: rm /etc/nginx/sites-enabled/default
+
+  #- name: Copy nginx default file
+    #shell: cp /home/ubuntu/web-app/nginx.conf /etc/nginx/sites-available/default.conf
+
+  #- name: Symlink from sites available to sites enabled
+    #shell: ln -s /etc/nginx/sites-available/default.conf /etc/nginx/sites-enabled/default.conf
+
+  - name: Restart nginx
+    shell: service nginx restart
+
+  - name: export db host variable for database
+    shell: echo "DB_HOST=mongodb://192.168.0.20:27017/posts" >> ~/.bashrc
+
+  - name: Stop pm2
+    shell: pm2 stop all
+    args:
+      chdir: /home/ubuntu/web-app/
+    ignore_errors: yes
+
+  - name: Install Forever
+    npm:
+      name: forever
+      global: yes
+
+  - name: NODE | Seed Posts
+    shell: node seed.js
+    args:
+      chdir: /home/ubuntu/web-app/seeds
+
+  - name: Install npm updates
+    shell: npm install
+    args:
+      chdir: /home/ubuntu/web-app
+
+  - name: start app -shell
+    shell:
+      cmd: . ~/.bashrc && forever start app.js
+      chdir: /home/ubuntu/web-app
+
+  - name: node seeds -shell
+    shell:
+      cmd: . ~/.bashrc && node seed.js
+      chdir: /home/ubuntu/web-app/seeds
+
+
+
+
+
+
+
+

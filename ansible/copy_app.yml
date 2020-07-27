@@ -1,0 +1,10 @@
+---
+- hosts: aws_ec2
+  gather_facts: yes
+  become: true
+  tasks:
+
+    - name: Copy web app into ec2
+      synchronize:
+        src: /home/ubuntu/web-app
+        dest: /home/ubuntu
