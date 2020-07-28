@@ -12,6 +12,9 @@
 
     - name: MongoDB - Add repository
       shell: echo "deb http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.2 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.2.list
+    
+    - name: update
+      shell: sudo apt-get update
 
     - name: install mongo db
       apt: pkg=mongodb-org state=present

@@ -117,7 +117,11 @@ ec2_secret_key: afjdfadgf$fgajk5ragesfjgjsfdbtirhf
 
       tags: ['never', 'create_ec2']
 ```
+## Create Instance
+ansible-playbook playbook.yml --ask-vault-pass --tags create_ec2
+
 # SSH in
+ssh -i ~/.ssh/KEYNAME ubuntu@PUBLICDNS
 ## Change permissions
 $ cd /etc/ssh
 $ sudo nano sshd_config
@@ -129,7 +133,7 @@ $ exit
 
 ## Change hosts file Ansible controller
 $ vagrant ssh ansible
-$ cd /etc/
+$ cd /etc/ansible
 $ sudo nano hosts
 [aws_ec2]
 [public_IP] ansible_connection= ssh ansible_ssh_user=root ansible_ssh_pass=[passwd]

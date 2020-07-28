@@ -1,7 +1,8 @@
+
 # This is an example of ansible playbook written in YMAL
 # YAML FILE STARTS WITH THREE --- DASHES(---)
 ---
-- hosts: aws_ec2
+- hosts: web
 # host is to define the name of your host machine, group or all servers
 # in this example we are targeting server called web
   gather_facts: yes
@@ -34,23 +35,26 @@
   - name: Install Nginx
     apt: pkg=nginx state=present
 
- # - name: Remove nginx default files - sites available
-    #shell: rm /etc/nginx/sites-available/default
-
-  #- name: Remove nginx default files - sites enabled
-    #shell: rm /etc/nginx/sites-enabled/default
-
-  #- name: Copy nginx default file
-    #shell: cp /home/ubuntu/web-app/nginx.conf /etc/nginx/sites-available/default.conf
-
-  #- name: Symlink from sites available to sites enabled
-    #shell: ln -s /etc/nginx/sites-available/default.conf /etc/nginx/sites-enabled/default.conf
+  # - name: Remove nginx default files - sites available
+  #   shell: rm /etc/nginx/sites-available/default
+  #
+  # - name: Remove nginx default files - sites enabled
+  #   shell: rm /etc/nginx/sites-enabled/default
+  #
+  # - name: Copy nginx default file
+  #   shell: cp /home/ubuntu/web-app/nginx.conf /etc/nginx/sites-available/default.conf
+  # #
+  # - name: Symlink from sites available to sites enabled
+  #   shell: ln -s /etc/nginx/sites-available/default.conf /etc/nginx/sites-enabled/default.conf
 
   - name: Restart nginx
     shell: service nginx restart
 
   - name: export db host variable for database
-    shell: echo "DB_HOST=mongodb://192.168.0.20:27017/posts" >> ~/.bashrc
+    shell: echo "export DB_HOST=mongodb://192.168.0.20:27017/posts" >> ~/.bashrc
+
+  - name: execute bashrc
+    shell: . ~/.bashrc
 
   - name: Stop pm2
     shell: pm2 stop all
@@ -82,11 +86,3 @@
     shell:
       cmd: . ~/.bashrc && node seed.js
       chdir: /home/ubuntu/web-app/seeds
-
-
-
-
-
-
-
-

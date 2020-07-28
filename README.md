@@ -19,7 +19,7 @@
 
 ## How to connect through password
 
-1. In the ansible machine, go to your `ansible.cfg` file and disable `host_key_checking`
+1. In the ansible machine, go to your cd etc/ansible/`ansible.cfg` file and disable `host_key_checking`
 - it has to be under [default]
 2. In each agent machines, go to your `etc/ssh/sshd_config` file and change `PermitRootLogin` -> Yes. `PasswordAuthentication` -> Yes
 3. In each agent machine, `sudo passwd root`. Create the password for each machine
